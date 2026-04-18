@@ -22,11 +22,11 @@ class LoginController extends Controller
 
         if (Auth::attempt($credentials, $request->filled('remember'))) {
             $request->session()->regenerate();
-            return redirect()->intended('dashboard')->with('success', 'Bienvenue!');
+            return redirect()->route('products.index')->with('success', 'Bienvenue ' . Auth::user()->name . '!');
         }
 
         return back()->withErrors([
-            'email' => 'Les identifiants fournis ne correspondent pas à nos enregistrements.',
+            'email' => 'Identifiants incorrects.',
         ])->onlyInput('email');
     }
 

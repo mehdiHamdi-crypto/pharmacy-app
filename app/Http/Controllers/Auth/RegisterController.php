@@ -17,8 +17,7 @@ class RegisterController extends Controller
     public function register(Request $request)
     {
         $validated = $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'phone' => 'nullable|string|max:20',
             'city' => 'nullable|string|max:255',
@@ -27,15 +26,16 @@ class RegisterController extends Controller
         ]);
 
         $user = User::create([
-            'name' => $validated['first_name'] . ' ' . $validated['last_name'],
+            'name' => $validated['name'],
             'email' => $validated['email'],
             'phone' => $validated['phone'] ?? null,
             'city' => $validated['city'] ?? null,
             'password' => Hash::make($validated['password']),
+            'role' => 'customer',
         ]);
 
-        auth()->login($user);
+        Auth::login($user);
 
-        return redirect('dashboard')->with('success', 'Inscription réussie! Bienvenue.');
+        return redirect()->route('products.index')->with('success', 'Compte créé avec succès!');
     }
 }
