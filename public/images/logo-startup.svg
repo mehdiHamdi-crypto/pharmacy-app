@@ -1,0 +1,26 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fond blanc simple -->
+  <rect width="200" height="200" fill="#ffffff"/>
+  
+  <!-- Définition du gradient -->
+  <defs>
+    <linearGradient id="startupGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2563eb;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#059669;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Carré avec gradient bleu-vert -->
+  <rect x="50" y="50" width="100" height="100" rx="16" fill="url(#startupGrad)"/>
+  
+  <!-- Croix minimaliste blanche -->
+  <g stroke="#ffffff" stroke-width="8" stroke-linecap="round">
+    <line x1="100" y1="70" x2="100" y2="130"/>
+    <line x1="80" y1="100" x2="120" y2="100"/>
+  </g>
+  
+  <!-- Texte PharmaCare -->
+  <text x="100" y="165" font-family="Inter, -apple-system, sans-serif" font-size="16" font-weight="700" text-anchor="middle" fill="#1f2937" letter-spacing="-0.5">
+    PharmaCare
+  </text>
+</svg>

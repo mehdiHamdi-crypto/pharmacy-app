@@ -567,7 +567,7 @@ body {
     .products h2,
     .services h2,
     .testimonials h2,
-    .cta h2 {
+.cta h2 {
         font-size: 28px;
     }
 
