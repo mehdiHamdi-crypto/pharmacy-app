@@ -3,47 +3,56 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\CartController;
-use App\Http\Controllers\OrderController;
+use App\Http\Controllers\Admin\DashboardController as AdminDashboard;
+use App\Http\Controllers\Admin\ProductController as AdminProducts;
+use App\Models\Product;
 
+// ============================================
 // Landing page
+// ============================================
 Route::get('/', function () {
     return view('index');
 })->name('index');
 
-// Auth Routes
+// ============================================
+// Catalogue public (page produits)
+// ============================================
+Route::get('/products', function () {
+    $products = Product::with('category')
+        ->where('is_active', true)
+        ->latest()
+        ->paginate(12);
+    return view('products.index', compact('products'));
+})->name('products.index');
+
+// ============================================
+// Auth Routes (guest only)
+// ============================================
 Route::middleware('guest')->group(function () {
     Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [LoginController::class, 'login']);
-    
+
     Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
     Route::post('/register', [RegisterController::class, 'register']);
 });
 
-Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth')->name('logout');
+// ============================================
+// Logout
+// ============================================
+Route::post('/logout', [LoginController::class, 'logout'])
+    ->middleware('auth')
+    ->name('logout');
 
-// Products Routes
-Route::get('/products', [ProductController::class, 'index'])->name('products.index');
-Route::get('/products/{product}', [ProductController::class, 'show'])->name('products.show');
-Route::get('/category/{category}', [ProductController::class, 'byCategory'])->name('products.by-category');
+// ============================================
+// Admin Routes
+// ============================================
+Route::middleware(['auth', 'admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+        Route::get('/', [AdminDashboard::class, 'index'])->name('dashboard');
 
-// Cart Routes (Auth required)
-Route::middleware('auth')->group(function () {
-    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-    Route::post('/cart/add/{product}', [CartController::class, 'add'])->name('cart.add');
-    Route::patch('/cart/{cartItem}', [CartController::class, 'update'])->name('cart.update');
-    Route::delete('/cart/{cartItem}', [CartController::class, 'remove'])->name('cart.remove');
-    Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear');
-
-    // Orders Routes
-    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
-    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('orders.show');
-    Route::get('/checkout', [OrderController::class, 'checkout'])->name('checkout');
-    Route::post('/checkout', [OrderController::class, 'store'])->name('orders.store');
-
-    // Dashboard
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
-});
+        Route::resource('products', AdminProducts::class)->except(['show']);
+        Route::patch('products/{product}/toggle', [AdminProducts::class, 'toggle'])
+             ->name('products.toggle');
+    });

@@ -1,535 +1,191 @@
 @extends('layouts.app')
 
-@section('title', 'PharmaCare - Votre Pharmacie en Ligne de Confiance')
+@section('title', 'PharmaCare — Votre pharmacie de confiance')
 
 @section('content')
 
-<style>
-    .hero {
-        padding: 80px 0;
-        background: linear-gradient(135deg, var(--primary-light) 0%, var(--white) 100%);
-    }
-
-    .hero .container {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 60px;
-        align-items: center;
-    }
-
-    .hero-content h1 {
-        font-size: 48px;
-        margin-bottom: 20px;
-        color: var(--text-dark);
-        font-weight: 700;
-        line-height: 1.2;
-    }
-
-    .hero-content p {
-        font-size: 18px;
-        color: var(--text-light);
-        margin-bottom: 30px;
-        line-height: 1.6;
-    }
-
-    .hero-buttons {
-        display: flex;
-        gap: 20px;
-    }
-
-    .btn {
-        padding: 12px 32px;
-        border: none;
-        border-radius: 8px;
-        font-size: 16px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        display: inline-block;
-    }
-
-    .btn-primary {
-        background: var(--primary-color);
-        color: var(--white);
-    }
-
-    .btn-primary:hover {
-        background: var(--primary-dark);
-        transform: translateY(-2px);
-        box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);
-    }
-
-    .btn-secondary {
-        background: var(--white);
-        color: var(--primary-color);
-        border: 2px solid var(--primary-color);
-    }
-
-    .btn-secondary:hover {
-        background: var(--primary-light);
-    }
-
-    .image-placeholder {
-        font-size: 120px;
-        text-align: center;
-        animation: float 3s ease-in-out infinite;
-    }
-
-    @keyframes float {
-        0%, 100% { transform: translateY(0); }
-        50% { transform: translateY(-20px); }
-    }
-
-    /* BENEFITS */
-    .benefits {
-        padding: 80px 0;
-        background: var(--white);
-    }
-
-    .benefits-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 40px;
-    }
-
-    .benefit-card {
-        text-align: center;
-        padding: 30px;
-        background: var(--bg-light);
-        border-radius: 12px;
-        transition: all 0.3s ease;
-    }
-
-    .benefit-card:hover {
-        background: var(--white);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        transform: translateY(-5px);
-    }
-
-    .benefit-icon {
-        font-size: 48px;
-        margin-bottom: 15px;
-    }
-
-    .benefit-card h3 {
-        font-size: 20px;
-        margin-bottom: 10px;
-        color: var(--text-dark);
-    }
-
-    .benefit-card p {
-        color: var(--text-light);
-        font-size: 15px;
-    }
-
-    /* PRODUCTS */
-    .products {
-        padding: 80px 0;
-        background: var(--bg-light);
-    }
-
-    .products h2 {
-        font-size: 36px;
-        margin-bottom: 50px;
-        text-align: center;
-        color: var(--text-dark);
-    }
-
-    .products-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        gap: 30px;
-    }
-
-    .product-category {
-        background: var(--white);
-        padding: 40px 30px;
-        border-radius: 12px;
-        text-align: center;
-        border: 2px solid transparent;
-        transition: all 0.3s ease;
-        cursor: pointer;
-    }
-
-    .product-category:hover {
-        border-color: var(--primary-color);
-        box-shadow: 0 15px 40px rgba(16, 185, 129, 0.1);
-        transform: translateY(-5px);
-    }
-
-    .category-icon {
-        font-size: 56px;
-        margin-bottom: 20px;
-    }
-
-    .product-category h3 {
-        font-size: 20px;
-        margin-bottom: 10px;
-        color: var(--text-dark);
-    }
-
-    .product-category p {
-        color: var(--text-light);
-        margin-bottom: 20px;
-    }
-
-    .link-arrow {
-        color: var(--primary-color);
-        text-decoration: none;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        display: inline-block;
-    }
-
-    .link-arrow:hover {
-        transform: translateX(5px);
-    }
-
-    /* SERVICES */
-    .services {
-        padding: 80px 0;
-        background: var(--white);
-    }
-
-    .services h2 {
-        font-size: 36px;
-        margin-bottom: 50px;
-        text-align: center;
-        color: var(--text-dark);
-    }
-
-    .services-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 50px;
-    }
-
-    .service-item {
-        position: relative;
-        padding-left: 80px;
-    }
-
-    .service-number {
-        position: absolute;
-        left: 0;
-        top: 0;
-        font-size: 48px;
-        font-weight: 700;
-        color: var(--primary-light);
-    }
-
-    .service-item h3 {
-        font-size: 22px;
-        margin-bottom: 15px;
-        color: var(--text-dark);
-    }
-
-    .service-item p {
-        color: var(--text-light);
-        line-height: 1.7;
-    }
-
-    /* TESTIMONIALS */
-    .testimonials {
-        padding: 80px 0;
-        background: var(--bg-light);
-    }
-
-    .testimonials h2 {
-        font-size: 36px;
-        margin-bottom: 50px;
-        text-align: center;
-        color: var(--text-dark);
-    }
-
-    .testimonials-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 30px;
-    }
-
-    .testimonial-card {
-        background: var(--white);
-        padding: 30px;
-        border-radius: 12px;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-        transition: all 0.3s ease;
-    }
-
-    .testimonial-card:hover {
-        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
-        transform: translateY(-5px);
-    }
-
-    .stars {
-        font-size: 18px;
-        margin-bottom: 15px;
-    }
-
-    .testimonial-text {
-        color: var(--text-dark);
-        margin-bottom: 20px;
-        line-height: 1.7;
-        font-size: 15px;
-    }
-
-    .testimonial-author {
-        display: flex;
-        gap: 12px;
-        align-items: center;
-    }
-
-    .author-avatar {
-        width: 45px;
-        height: 45px;
-        border-radius: 50%;
-        background: var(--primary-color);
-        color: var(--white);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 700;
-        font-size: 14px;
-    }
-
-    .testimonial-author strong {
-        display: block;
-        color: var(--text-dark);
-    }
-
-    .testimonial-author span {
-        display: block;
-        font-size: 13px;
-        color: var(--text-light);
-    }
-
-    /* CTA */
-    .cta {
-        padding: 80px 0;
-        background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-        color: var(--white);
-        text-align: center;
-    }
-
-    .cta h2 {
-        font-size: 40px;
-        margin-bottom: 20px;
-        color: var(--white);
-    }
-
-    .cta p {
-        font-size: 18px;
-        margin-bottom: 30px;
-        color: rgba(255, 255, 255, 0.9);
-    }
-
-    .cta .btn-primary {
-        background: var(--white);
-        color: var(--primary-color);
-        font-weight: 700;
-        padding: 16px 48px;
-        font-size: 18px;
-    }
-
-    .cta .btn-primary:hover {
-        background: var(--primary-light);
-    }
-
-    @media (max-width: 768px) {
-        .hero .container {
-            grid-template-columns: 1fr;
-        }
-
-        .hero-content h1 {
-            font-size: 32px;
-        }
-
-        .image-placeholder {
-            font-size: 80px;
-        }
-
-        .hero-buttons {
-            flex-direction: column;
-        }
-
-        .btn {
-            width: 100%;
-            text-align: center;
-        }
-    }
-</style>
-
-<!-- HERO SECTION -->
+{{-- ============ HERO ============ --}}
 <section class="hero">
     <div class="container">
         <div class="hero-content">
-            <h1>Votre Santé, Notre Priorité</h1>
-            <p>Découvrez notre large gamme de produits pharmaceutiques et de bien-être livrés directement à votre porte</p>
-            <div class="hero-buttons">
-                @if(Auth::check())
-                    <a href="#produits" class="btn btn-primary">Commencer les achats</a>
-                @else
-                    <a href="{{ route('register') }}" class="btn btn-primary">Créer un compte</a>
-                @endif
-                <a href="#services" class="btn btn-secondary">En savoir plus</a>
+            <div class="hero-text">
+                <span class="eyebrow">Pharmacie · Conseil · Bien-être</span>
+                <h1>Votre santé,<br><em>notre engagement</em> au quotidien.</h1>
+                <p>Une sélection rigoureuse de produits pharmaceutiques et un accompagnement humain. PharmaCare réinvente votre expérience en pharmacie.</p>
+                <div class="hero-buttons">
+                    <a href="{{ route('products.index') }}" class="btn btn-primary btn-lg">Découvrir nos produits</a>
+                    <a href="#why-us" class="btn btn-secondary btn-lg">En savoir plus</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                {{-- Tu peux remplacer par une vraie image --}}
+                <img src="https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=800&q=80" alt="Pharmacie professionnelle">
             </div>
         </div>
-        <div class="hero-image">
-            <div class="image-placeholder">📦</div>
+
+        {{-- STATS --}}
+        <div class="stats">
+            <div class="stat-item">
+                <h3>15K+</h3>
+                <p>Clients satisfaits</p>
+            </div>
+            <div class="stat-item">
+                <h3>2 500</h3>
+                <p>Produits référencés</p>
+            </div>
+            <div class="stat-item">
+                <h3>24/7</h3>
+                <p>Service disponible</p>
+            </div>
+            <div class="stat-item">
+                <h3>98%</h3>
+                <p>Taux de satisfaction</p>
+            </div>
         </div>
     </div>
 </section>
 
-<!-- BENEFITS -->
-<section class="benefits">
+{{-- ============ WHY US — Icônes SVG professionnelles (zéro emoji) ============ --}}
+<section id="why-us" class="why-us">
     <div class="container">
-        <div class="benefits-grid">
-            <div class="benefit-card">
-                <div class="benefit-icon">💊</div>
+        <div class="section-head">
+            <span class="eyebrow">Pourquoi nous choisir</span>
+            <h2 class="section-title">L'excellence <em>pharmaceutique</em><br>à portée de main.</h2>
+            <p class="section-subtitle">Quatre engagements qui définissent notre approche du soin et de la confiance.</p>
+        </div>
+
+        <div class="why-us-grid">
+            {{-- 01 — Produits Certifiés --}}
+            <div class="why-card">
+                <span class="why-number">01 / Qualité</span>
+                <div class="why-icon">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        <path d="m9 12 2 2 4-4"/>
+                    </svg>
+                </div>
                 <h3>Produits Certifiés</h3>
-                <p>Tous nos produits sont certifiés et contrôlés par les autorités sanitaires</p>
+                <p>Tous nos produits sont certifiés et contrôlés par les autorités sanitaires marocaines, avec traçabilité complète.</p>
             </div>
-            <div class="benefit-card">
-                <div class="benefit-icon">🚚</div>
+
+            {{-- 02 — Livraison Rapide --}}
+            <div class="why-card">
+                <span class="why-number">02 / Logistique</span>
+                <div class="why-icon">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 17h-2v-11a1 1 0 0 1 1-1h11v12m-12 0a2 2 0 1 0 4 0m-4 0a2 2 0 1 1 4 0m11 0h-7m7 0a2 2 0 1 0 4 0m-4 0a2 2 0 1 1 4 0m0 0h2v-6h-8m0-5h5l3 5"/>
+                    </svg>
+                </div>
                 <h3>Livraison Rapide</h3>
-                <p>Livraison en 24-48h partout dans le pays avec suivi en temps réel</p>
+                <p>Livraison en 24 à 48 heures partout au Maroc, avec suivi en temps réel et emballage sécurisé adapté.</p>
             </div>
-            <div class="benefit-card">
-                <div class="benefit-icon">👨‍⚕️</div>
-                <h3>Conseil Gratuit</h3>
-                <p>Nos pharmaciens sont disponibles pour vous conseiller gratuitement</p>
+
+            {{-- 03 — Conseil Gratuit --}}
+            <div class="why-card">
+                <span class="why-number">03 / Accompagnement</span>
+                <div class="why-icon">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                        <path d="M8 10h.01M12 10h.01M16 10h.01"/>
+                    </svg>
+                </div>
+                <h3>Conseil Pharmacien</h3>
+                <p>Nos pharmaciens diplômés sont à votre écoute par chat, téléphone ou en visio pour un conseil personnalisé.</p>
             </div>
-            <div class="benefit-card">
-                <div class="benefit-icon">🔒</div>
+
+            {{-- 04 — Paiement Sécurisé --}}
+            <div class="why-card">
+                <span class="why-number">04 / Sécurité</span>
+                <div class="why-icon">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2"/>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                        <circle cx="12" cy="16" r="1"/>
+                    </svg>
+                </div>
                 <h3>Paiement Sécurisé</h3>
-                <p>Transactions 100% sécurisées avec SSL et protection des données</p>
+                <p>Transactions chiffrées en SSL 256 bits, protection totale de vos données personnelles et bancaires.</p>
             </div>
         </div>
     </div>
 </section>
 
-<!-- PRODUCTS -->
-<section id="produits" class="products">
+{{-- ============ PRODUITS PHARES ============ --}}
+<section id="services" class="products">
     <div class="container">
-        <h2>Nos Catégories</h2>
+        <div class="section-head">
+            <span class="eyebrow">Sélection</span>
+            <h2 class="section-title">Nos <em>essentiels</em><br>du moment.</h2>
+            <p class="section-subtitle">Une curation soignée des produits les plus appréciés par notre communauté.</p>
+        </div>
+
         <div class="products-grid">
-            <div class="product-category">
-                <div class="category-icon">💊</div>
-                <h3>Médicaments</h3>
-                <p>Médicaments sur ordonnance et sans ordonnance</p>
-                <a href="#" class="link-arrow">Voir plus →</a>
-            </div>
-            <div class="product-category">
-                <div class="category-icon">🧴</div>
-                <h3>Beauté & Hygiene</h3>
-                <p>Produits de beauté et d'hygiène personnelle</p>
-                <a href="#" class="link-arrow">Voir plus →</a>
-            </div>
-            <div class="product-category">
-                <div class="category-icon">🍃</div>
-                <h3>Compléments</h3>
-                <p>Vitamines et compléments alimentaires naturels</p>
-                <a href="#" class="link-arrow">Voir plus →</a>
-            </div>
-            <div class="product-category">
-                <div class="category-icon">👶</div>
-                <h3>Bébé & Maman</h3>
-                <p>Produits spécialisés pour bébés et femmes enceintes</p>
-                <a href="#" class="link-arrow">Voir plus →</a>
-            </div>
-            <div class="product-category">
-                <div class="category-icon">⚙️</div>
-                <h3>Équipements</h3>
-                <p>Tensiomètres, thermomètres et appareils médicaux</p>
-                <a href="#" class="link-arrow">Voir plus →</a>
-            </div>
-            <div class="product-category">
-                <div class="category-icon">🩹</div>
-                <h3>Premiers Secours</h3>
-                <p>Pansements, désinfectants et produits d'urgence</p>
-                <a href="#" class="link-arrow">Voir plus →</a>
-            </div>
+            <article class="product-card">
+                <div class="product-image">
+                    <img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600&q=80" alt="Vitamines D3">
+                </div>
+                <span class="product-category">Compléments</span>
+                <h3 class="product-name">Vitamine D3 Premium</h3>
+                <p class="product-desc">Renforce le système immunitaire et la santé osseuse.</p>
+                <div class="product-price">120<span class="currency">MAD</span></div>
+                <div class="product-actions">
+                    <a href="#" class="btn btn-primary btn-sm btn-full">Ajouter au panier</a>
+                </div>
+            </article>
+
+            <article class="product-card">
+                <div class="product-image">
+                    <img src="https://images.unsplash.com/photo-1626516127753-66af50b9d7d4?w=600&q=80" alt="Crème hydratante">
+                </div>
+                <span class="product-category">Dermo-cosmétique</span>
+                <h3 class="product-name">Crème Hydratante Apaisante</h3>
+                <p class="product-desc">Soin quotidien pour peaux sensibles et réactives.</p>
+                <div class="product-price">185<span class="currency">MAD</span></div>
+                <div class="product-actions">
+                    <a href="#" class="btn btn-primary btn-sm btn-full">Ajouter au panier</a>
+                </div>
+            </article>
+
+            <article class="product-card">
+                <div class="product-image">
+                    <img src="https://images.unsplash.com/photo-1607619056574-7b8d3ee536b2?w=600&q=80" alt="Probiotiques">
+                </div>
+                <span class="product-category">Digestion</span>
+                <h3 class="product-name">Probiotiques Flore+</h3>
+                <p class="product-desc">Équilibre intestinal et digestion harmonieuse.</p>
+                <div class="product-price">240<span class="currency">MAD</span></div>
+                <div class="product-actions">
+                    <a href="#" class="btn btn-primary btn-sm btn-full">Ajouter au panier</a>
+                </div>
+            </article>
+
+            <article class="product-card">
+                <div class="product-image">
+                    <img src="https://images.unsplash.com/photo-1559757175-5700dde675bc?w=600&q=80" alt="Huile essentielle">
+                </div>
+                <span class="product-category">Aromathérapie</span>
+                <h3 class="product-name">Huile Essentielle Lavande</h3>
+                <p class="product-desc">Apaisante, favorise le sommeil et la détente.</p>
+                <div class="product-price">95<span class="currency">MAD</span></div>
+                <div class="product-actions">
+                    <a href="#" class="btn btn-primary btn-sm btn-full">Ajouter au panier</a>
+                </div>
+            </article>
         </div>
     </div>
 </section>
 
-<!-- SERVICES -->
-<section id="services" class="services">
-    <div class="container">
-        <h2>Nos Services Professionnels</h2>
-        <div class="services-grid">
-            <div class="service-item">
-                <div class="service-number">01</div>
-                <h3>Consultation Pharmacien</h3>
-                <p>Consultez nos pharmaciens diplômés en ligne pour vos questions de santé et médicaments.</p>
-            </div>
-            <div class="service-item">
-                <div class="service-number">02</div>
-                <h3>Renouvellement Ordonnance</h3>
-                <p>Renouvelez vos ordonnances facilement depuis votre espace personnel en quelques clics.</p>
-            </div>
-            <div class="service-item">
-                <div class="service-number">03</div>
-                <h3>Programme Fidélité</h3>
-                <p>Gagnez des points à chaque achat et profitez de réductions exclusives en tant que client fidèle.</p>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- TESTIMONIALS -->
-<section class="testimonials">
-    <div class="container">
-        <h2>Ce que Disent Nos Clients</h2>
-        <div class="testimonials-grid">
-            <div class="testimonial-card">
-                <div class="stars">⭐⭐⭐⭐⭐</div>
-                <p class="testimonial-text">"Excellente plateforme, livraison rapide et service client réactif. Je recommande vivement!"</p>
-                <div class="testimonial-author">
-                    <div class="author-avatar">AM</div>
-                    <div>
-                        <strong>Amina M.</strong>
-                        <span>Client depuis 2023</span>
-                    </div>
-                </div>
-            </div>
-            <div class="testimonial-card">
-                <div class="stars">⭐⭐⭐⭐⭐</div>
-                <p class="testimonial-text">"Les produits sont authentiques et les prix sont compétitifs. Très satisfait de mon achat!"</p>
-                <div class="testimonial-author">
-                    <div class="author-avatar">KH</div>
-                    <div>
-                        <strong>Khalid H.</strong>
-                        <span>Client depuis 2023</span>
-                    </div>
-                </div>
-            </div>
-            <div class="testimonial-card">
-                <div class="stars">⭐⭐⭐⭐⭐</div>
-                <p class="testimonial-text">"Les pharmaciens m'ont aidé à choisir le meilleur produit pour ma situation. Service de qualité!"</p>
-                <div class="testimonial-author">
-                    <div class="author-avatar">SR</div>
-                    <div>
-                        <strong>Sara R.</strong>
-                        <span>Client depuis 2024</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- CTA -->
+{{-- ============ CTA ============ --}}
 <section class="cta">
     <div class="container">
-        <h2>Prêt à Commander?</h2>
-        <p>Rejoignez des milliers de clients satisfaits et commencez vos achats aujourd'hui</p>
-        @if(Auth::check())
-            <a href="#produits" class="btn btn-primary">Continuer les achats</a>
+        <span class="eyebrow">Rejoignez-nous</span>
+        <h2>Prenez soin de vous,<br><em>nous nous occupons</em> du reste.</h2>
+        <p>Créez votre compte gratuitement et profitez d'un suivi personnalisé, de promotions exclusives et d'un accès direct à nos pharmaciens.</p>
+        @guest
+            <a href="{{ route('register') }}" class="btn btn-primary btn-lg">Créer mon compte</a>
         @else
-            <a href="{{ route('register') }}" class="btn btn-primary">Créer un compte gratuit</a>
-        @endif
+            <a href="{{ route('products.index') }}" class="btn btn-primary btn-lg">Explorer le catalogue</a>
+        @endguest
     </div>
 </section>
 
