@@ -78,11 +78,29 @@
 
         <div class="form-card">
             <h3 class="card-title">Image principale</h3>
+
+            {{-- ======================================================
+                 APERÇU IMAGE EXISTANTE
+                 S'affiche uniquement si une image a déjà été uploadée
+            ====================================================== --}}
             @if(isset($product) && $product->image_url)
                 <div class="img-preview">
-                    <img src="{{ asset('storage/'.$product->image_url) }}" alt="Image actuelle">
+                    <img
+                        src="{{ asset('storage/' . $product->image_url) }}"
+                        alt="Image actuelle"
+                        style="width:100%; height:200px; object-fit:cover; border-radius:8px; display:block;"
+                        onerror="this.style.display='none'; document.getElementById('img-error').style.display='block';"
+                    >
+                    {{-- Message affiché si storage:link n'est pas fait --}}
+                    <p id="img-error" style="display:none; color:#c0392b; font-size:13px; margin-top:8px;">
+                        ⚠️ Image introuvable. Lance <code>php artisan storage:link</code>
+                    </p>
+                    <p style="font-size:12px; color:#888; margin-top:6px;">
+                        Chemin stocké : <code>{{ $product->image_url }}</code>
+                    </p>
                 </div>
             @endif
+
             <div class="file-drop">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
                 <span>Cliquez pour choisir une image</span>

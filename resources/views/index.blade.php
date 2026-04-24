@@ -18,7 +18,12 @@
                 </div>
             </div>
             <div class="hero-image">
-                {{-- Tu peux remplacer par une vraie image --}}
+                {{-- ======================================================
+                     IMAGE HERO (grande image à droite sur la page d'accueil)
+                     Pour changer : remplace l'URL ci-dessous
+                     • URL externe  : https://ton-site.com/image.jpg
+                     • Image locale : {{ asset('images/hero.jpg') }}
+                ====================================================== --}}
                 <img src="https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=800&q=80" alt="Pharmacie professionnelle">
             </div>
         </div>
@@ -120,9 +125,21 @@
         </div>
 
         <div class="products-grid">
+
+            {{-- ======================================================
+                 PRODUITS PHARES — IMAGES HARDCODÉES
+                 Pour changer une image : remplace l'URL dans src="..."
+                 Tu peux utiliser :
+                   • Une URL externe  : https://example.com/image.jpg
+                   • Une image locale : {{ asset('images/vitamine-d3.jpg') }}
+                     (mettre le fichier dans public/images/)
+            ====================================================== --}}
+
+            {{-- PRODUIT 1 — Vitamine D3 --}}
             <article class="product-card">
                 <div class="product-image">
-                    <img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600&q=80" alt="Vitamines D3">
+                    {{-- CHANGER L'IMAGE ICI ↓ --}}
+                    <img src="https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=600&q=80" alt="Vitamines D3" style="width:100%; height:100%; object-fit:cover; display:block;">
                 </div>
                 <span class="product-category">Compléments</span>
                 <h3 class="product-name">Vitamine D3 Premium</h3>
@@ -133,9 +150,11 @@
                 </div>
             </article>
 
+            {{-- PRODUIT 2 — Crème hydratante --}}
             <article class="product-card">
                 <div class="product-image">
-                    <img src="https://images.unsplash.com/photo-1626516127753-66af50b9d7d4?w=600&q=80" alt="Crème hydratante">
+                    {{-- CHANGER L'IMAGE ICI ↓ --}}
+                    <img src="https://images.unsplash.com/photo-1626516127753-66af50b9d7d4?w=600&q=80" alt="Crème hydratante" style="width:100%; height:100%; object-fit:cover; display:block;">
                 </div>
                 <span class="product-category">Dermo-cosmétique</span>
                 <h3 class="product-name">Crème Hydratante Apaisante</h3>
@@ -146,9 +165,11 @@
                 </div>
             </article>
 
+            {{-- PRODUIT 3 — Probiotiques --}}
             <article class="product-card">
                 <div class="product-image">
-                    <img src="https://images.unsplash.com/photo-1607619056574-7b8d3ee536b2?w=600&q=80" alt="Probiotiques">
+                    {{-- CHANGER L'IMAGE ICI ↓ --}}
+                    <img src="https://images.unsplash.com/photo-1607619056574-7b8d3ee536b2?w=600&q=80" alt="Probiotiques" style="width:100%; height:100%; object-fit:cover; display:block;">
                 </div>
                 <span class="product-category">Digestion</span>
                 <h3 class="product-name">Probiotiques Flore+</h3>
@@ -159,9 +180,11 @@
                 </div>
             </article>
 
+            {{-- PRODUIT 4 — Huile essentielle --}}
             <article class="product-card">
                 <div class="product-image">
-                    <img src="https://images.unsplash.com/photo-1559757175-5700dde675bc?w=600&q=80" alt="Huile essentielle">
+                    {{-- CHANGER L'IMAGE ICI ↓ --}}
+                    <img src="https://images.unsplash.com/photo-1559757175-5700dde675bc?w=600&q=80" alt="Huile essentielle" style="width:100%; height:100%; object-fit:cover; display:block;">
                 </div>
                 <span class="product-category">Aromathérapie</span>
                 <h3 class="product-name">Huile Essentielle Lavande</h3>
@@ -171,6 +194,7 @@
                     <a href="#" class="btn btn-primary btn-sm btn-full">Ajouter au panier</a>
                 </div>
             </article>
+
         </div>
     </div>
 </section>

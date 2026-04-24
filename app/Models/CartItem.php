@@ -19,9 +19,8 @@ class CartItem extends Model
         return $this->belongsTo(Product::class);
     }
 
-    // Accesseur pour le subtotal
-    public function getSubtotalAttribute()
+    public function getSubtotalAttribute(): float
     {
-        return $this->product->final_price * $this->quantity;
+        return (float) (($this->product?->final_price ?? 0) * $this->quantity);
     }
 }

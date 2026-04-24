@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\Controller;
 use App\Models\CartItem;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -16,22 +17,36 @@ class CartController extends Controller
 
     public function index()
     {
-        $cartItems = Auth::user()->cartItems()->with('product')->get();
-        $total = $cartItems->sum(fn($item) => $item->product->final_price * $item->quantity);
+        $cartItems = Auth::user()->cartItems()->with('product.category')->get();
+        $total = $cartItems->sum(fn ($item) => $item->product->final_price * $item->quantity);
 
         return view('cart.index', compact('cartItems', 'total'));
     }
 
     public function add(Request $request, Product $product)
     {
-        $quantity = $request->input('quantity', 1);
+        $data = $request->validate([
+            'quantity' => 'nullable|integer|min:1',
+        ]);
+
+        $quantity = (int) ($data['quantity'] ?? 1);
+
+        if ($product->stock < $quantity) {
+            return back()->with('error', 'Stock insuffisant pour ce produit.');
+        }
 
         $cartItem = CartItem::where('user_id', Auth::id())
             ->where('product_id', $product->id)
             ->first();
 
         if ($cartItem) {
-            $cartItem->increment('quantity', $quantity);
+            $newQuantity = $cartItem->quantity + $quantity;
+
+            if ($newQuantity > $product->stock) {
+                return back()->with('error', 'La quantite demandee depasse le stock disponible.');
+            }
+
+            $cartItem->update(['quantity' => $newQuantity]);
         } else {
             CartItem::create([
                 'user_id' => Auth::id(),
@@ -40,22 +55,24 @@ class CartController extends Controller
             ]);
         }
 
-        return back()->with('success', $product->name . ' ajouté au panier!');
+        return back()->with('success', $product->name . ' a bien ete ajoute au panier.');
     }
 
     public function update(Request $request, CartItem $cartItem)
     {
         $this->authorize('update', $cartItem);
 
-        $quantity = $request->input('quantity', 1);
+        $data = $request->validate([
+            'quantity' => 'required|integer|min:1',
+        ]);
 
-        if ($quantity <= 0) {
-            $cartItem->delete();
-        } else {
-            $cartItem->update(['quantity' => $quantity]);
+        if ($data['quantity'] > $cartItem->product->stock) {
+            return back()->with('error', 'La quantite demandee depasse le stock disponible.');
         }
 
-        return back()->with('success', 'Panier mis à jour.');
+        $cartItem->update(['quantity' => $data['quantity']]);
+
+        return back()->with('success', 'Panier mis a jour.');
     }
 
     public function remove(CartItem $cartItem)
@@ -63,13 +80,13 @@ class CartController extends Controller
         $this->authorize('delete', $cartItem);
         $cartItem->delete();
 
-        return back()->with('success', 'Produit supprimé du panier.');
+        return back()->with('success', 'Produit supprime du panier.');
     }
 
     public function clear()
     {
         Auth::user()->cartItems()->delete();
 
-        return back()->with('success', 'Panier vidé.');
+        return back()->with('success', 'Panier vide.');
     }
 }

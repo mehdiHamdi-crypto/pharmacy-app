@@ -11,8 +11,9 @@ class AdminMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         if (!auth()->check() || auth()->user()->role !== 'admin') {
-            abort(403, 'Accès réservé aux administrateurs.');
+            abort(403, 'Acces reserve aux administrateurs.');
         }
+
         return $next($request);
     }
 }
