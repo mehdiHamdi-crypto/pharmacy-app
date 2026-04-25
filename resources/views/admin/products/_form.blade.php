@@ -16,9 +16,7 @@
                     <select id="category_id" name="category_id" required>
                         <option value="">Choisir une categorie</option>
                         @foreach($categories as $cat)
-                            <option value="{{ $cat->id }}" @selected(old('category_id', $product->category_id ?? '') == $cat->id)>
-                                {{ $cat->name }}
-                            </option>
+                            <option value="{{ $cat->id }}" @selected(old('category_id', $product->category_id ?? '') == $cat->id)>{{ $cat->name }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -76,15 +74,24 @@
 
             @if(isset($product) && $product->image_url)
                 <div class="img-preview">
-                    <img src="{{ asset('storage/' . $product->image_url) }}" alt="Image actuelle">
+                    <img src="{{ $product->imageSrc() }}" alt="Image actuelle">
                 </div>
             @endif
 
-            <div class="file-drop">
-                <span>Choisir une image</span>
-                <em>PNG ou JPG, 4 Mo max</em>
-                <input type="file" name="image" accept="image/*">
+            <div class="field">
+                <label for="image_url">URL image</label>
+                <input type="text" id="image_url" name="image_url" value="{{ old('image_url', $product->image_url ?? '') }}" placeholder="https://exemple.com/image.jpg ou products/mon-image.jpg">
             </div>
+
+            <div class="file-drop">
+                <span>Choisir une image locale</span>
+                <em>PNG ou JPG, 4 Mo max. Upload prioritaire sur lURL si renseignee.</em>
+                <input type="file" name="image_upload" accept="image/*">
+            </div>
+
+            <p style="margin-top:12px; color:var(--muted); font-size:12px; line-height:1.6;">
+                Si vous utilisez un upload local, pensez a executer <code>php artisan storage:link</code> dans votre projet Laravel.
+            </p>
         </div>
     </div>
 </div>

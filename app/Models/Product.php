@@ -61,6 +61,16 @@ class Product extends Model
         return $this->effective_price;
     }
 
+    public function inStock(): bool
+    {
+        return $this->stock > 0;
+    }
+
+    public function isLowStock(int $threshold = 10): bool
+    {
+        return $this->stock > 0 && $this->stock <= $threshold;
+    }
+
     public function defaultImageUrl(): string
     {
         return 'https://commons.wikimedia.org/wiki/Special:Redirect/file/VitaminSupplementPills2.jpg';

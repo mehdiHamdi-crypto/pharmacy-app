@@ -2,8 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -32,13 +34,13 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'id' => 4,
-                'name' => 'Hygiene et Bien-etre',
-                'description' => 'Produits d hygiene quotidienne',
+                'name' => 'Hygiene et bien-etre',
+                'description' => 'Produits dhygiene quotidienne et prevention',
                 'is_active' => 1,
             ],
             [
                 'id' => 5,
-                'name' => 'Maman et Bebe',
+                'name' => 'Maman et bebe',
                 'description' => 'Produits pour mamans et nourrissons',
                 'is_active' => 1,
             ],
@@ -78,10 +80,10 @@ class DatabaseSeeder extends Seeder
             [
                 'category_id' => 1,
                 'name' => 'Efferalgan 500mg',
-                'description' => 'Paracetamol effervescent rapide.',
+                'description' => 'Paracetamol effervescent pour soulager rapidement la douleur.',
                 'price' => 32.50,
                 'discount_price' => 28.00,
-                'stock' => 90,
+                'stock' => 8,
                 'image_url' => 'https://www.pharmaciepolygone.com/media/image/10/bf/51fff9d706d8109c4d793194e683.jpeg',
                 'sku' => 'PHC-MED002',
                 'is_active' => 1,
@@ -89,54 +91,54 @@ class DatabaseSeeder extends Seeder
             [
                 'category_id' => 2,
                 'name' => 'Vitamine D3 Premium',
-                'description' => 'Renforce immunite et os.',
+                'description' => 'Renforce limmunite et le capital osseux.',
                 'price' => 120.00,
                 'discount_price' => null,
-                'stock' => 85,
+                'stock' => 4,
                 'image_url' => 'https://www.naturemade.com/cdn/shop/products/NM2673PK000652VITAMIND3front.png?v=1665421285',
                 'sku' => 'PHC-CMP001',
                 'is_active' => 1,
             ],
             [
                 'category_id' => 3,
-                'name' => 'Creme Hydratante',
-                'description' => 'Soin pour peaux sensibles.',
+                'name' => 'Creme hydratante',
+                'description' => 'Soin quotidien pour peaux sensibles et deshydratees.',
                 'price' => 185.00,
-                'discount_price' => null,
-                'stock' => 40,
+                'discount_price' => 159.00,
+                'stock' => 24,
                 'image_url' => 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Eucerin-cream.jpg',
                 'sku' => 'PHC-DRM001',
                 'is_active' => 1,
             ],
             [
                 'category_id' => 4,
-                'name' => 'Gel Hydroalcoolique',
-                'description' => 'Desinfectant mains.',
+                'name' => 'Gel hydroalcoolique',
+                'description' => 'Desinfectant pour les mains, format familial.',
                 'price' => 45.00,
                 'discount_price' => null,
-                'stock' => 200,
+                'stock' => 0,
                 'image_url' => 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Purell_hand_sanitizer_gel_in_bottle_%288487014501%29.jpg',
                 'sku' => 'PHC-HYG001',
                 'is_active' => 1,
             ],
             [
                 'category_id' => 5,
-                'name' => 'Lait Infantile',
-                'description' => '0 a 6 mois.',
+                'name' => 'Lait infantile',
+                'description' => 'Nutrition infantile 0 a 6 mois.',
                 'price' => 280.00,
                 'discount_price' => null,
-                'stock' => 50,
+                'stock' => 35,
                 'image_url' => 'https://commons.wikimedia.org/wiki/Special:Redirect/file/Enfamil_Gentlease_Infant_Formula.JPG',
                 'sku' => 'PHC-MAM001',
                 'is_active' => 1,
             ],
             [
                 'category_id' => 6,
-                'name' => 'Huile Lavande',
-                'description' => 'Relaxante.',
+                'name' => 'Huile essentielle lavande',
+                'description' => 'Huile relaxante pour diffusion et massage.',
                 'price' => 95.00,
                 'discount_price' => null,
-                'stock' => 65,
+                'stock' => 18,
                 'image_url' => 'https://commons.wikimedia.org/wiki/Special:Redirect/file/LavenderEssentialOil.png',
                 'sku' => 'PHC-ARM001',
                 'is_active' => 1,
@@ -160,5 +162,41 @@ class DatabaseSeeder extends Seeder
                 ]
             );
         }
+
+        User::updateOrCreate(
+            ['email' => 'admin@pharmacare.test'],
+            [
+                'name' => 'Administrateur PharmaCare',
+                'phone' => '+212600000001',
+                'city' => 'Fes',
+                'address' => 'PharmaCare, centre-ville, Fes',
+                'role' => 'admin',
+                'password' => Hash::make('Admin12345'),
+            ]
+        );
+
+        User::updateOrCreate(
+            ['email' => 'pharmacien@pharmacare.test'],
+            [
+                'name' => 'Pharmacien Demo',
+                'phone' => '+212600000002',
+                'city' => 'Fes',
+                'address' => 'Service stock - PharmaCare',
+                'role' => 'pharmacist',
+                'password' => Hash::make('Pharma12345'),
+            ]
+        );
+
+        User::updateOrCreate(
+            ['email' => 'client@pharmacare.test'],
+            [
+                'name' => 'Client Demo',
+                'phone' => '+212600000003',
+                'city' => 'Fes',
+                'address' => 'Quartier Atlas, Fes',
+                'role' => 'customer',
+                'password' => Hash::make('Client12345'),
+            ]
+        );
     }
 }

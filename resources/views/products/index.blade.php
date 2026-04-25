@@ -3,15 +3,15 @@
 @section('title', 'Catalogue - PharmaCare')
 
 @section('content')
-<section class="products" style="padding: 80px 0;">
+<section class="products" style="padding: 72px 0 88px;">
     <div class="container">
         <div class="section-head" style="margin-bottom:32px;">
             <span class="eyebrow">Catalogue complet</span>
             <h2 class="section-title">Nos <em>produits</em></h2>
-            <p class="section-subtitle">Recherche, filtre par categorie et intervalle de prix pour trouver plus vite le bon produit.</p>
+            <p class="section-subtitle">Recherchez, filtrez par categorie et consultez le stock avant de commander.</p>
         </div>
 
-        <form method="GET" action="{{ route('products.index') }}" style="display:grid; grid-template-columns:2fr 1fr 1fr 1fr auto; gap:12px; margin-bottom:30px; background:#fff; border:1px solid var(--rule); border-radius:20px; padding:18px;">
+        <form method="GET" action="{{ route('products.index') }}" style="display:grid; grid-template-columns:2fr 1fr 1fr 1fr auto; gap:12px; margin-bottom:30px; background:#fff; border:1px solid var(--rule); border-radius:22px; padding:18px;">
             <input type="search" name="q" value="{{ request('q') }}" placeholder="Nom, description ou SKU..." style="padding:12px 14px; border:1px solid var(--rule); border-radius:12px;">
             <select name="category" style="padding:12px 14px; border:1px solid var(--rule); border-radius:12px;">
                 <option value="">Toutes categories</option>
@@ -36,7 +36,17 @@
                         >
                     </div>
 
-                    <span class="product-category">{{ $product->category->name ?? 'General' }}</span>
+                    <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:10px;">
+                        <span class="product-category">{{ $product->category->name ?? 'Catalogue' }}</span>
+                        @if($product->stock === 0)
+                            <span style="display:inline-flex; padding:5px 10px; border-radius:999px; background:#faebeb; color:var(--danger); font-size:11px; font-weight:600;">Rupture</span>
+                        @elseif($product->stock <= 10)
+                            <span style="display:inline-flex; padding:5px 10px; border-radius:999px; background:var(--accent-soft); color:var(--accent); font-size:11px; font-weight:600;">Stock faible</span>
+                        @else
+                            <span style="display:inline-flex; padding:5px 10px; border-radius:999px; background:var(--sage-light); color:var(--sage-dark); font-size:11px; font-weight:600;">{{ $product->stock }} en stock</span>
+                        @endif
+                    </div>
+
                     <h3 class="product-name">{{ $product->name }}</h3>
                     <p class="product-desc">{{ \Illuminate\Support\Str::limit($product->description, 90) }}</p>
 
@@ -48,13 +58,17 @@
                     </div>
 
                     <div class="product-actions" style="display:grid; gap:10px;">
-                        <a href="{{ route('products.show', $product) }}" class="btn btn-login btn-full">Voir la fiche</a>
+                        <a href="{{ route('products.show', $product) }}" class="btn btn-secondary btn-sm btn-full">Voir la fiche</a>
 
                         @auth
-                            <form action="{{ route('cart.add', $product) }}" method="POST">
-                                @csrf
-                                <button type="submit" class="btn btn-primary btn-sm btn-full" style="width:100%; border:none;">Ajouter au panier</button>
-                            </form>
+                            @if($product->stock > 0)
+                                <form action="{{ route('cart.add', $product) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="btn btn-primary btn-sm btn-full" style="width:100%; border:none;">Ajouter au panier</button>
+                                </form>
+                            @else
+                                <button class="btn btn-secondary btn-sm btn-full" type="button" disabled style="opacity:.65; cursor:not-allowed;">Indisponible</button>
+                            @endif
                         @else
                             <a href="{{ route('login') }}" class="btn btn-primary btn-sm btn-full">Se connecter pour acheter</a>
                         @endauth
@@ -62,7 +76,7 @@
                 </article>
             @empty
                 <p style="grid-column: 1/-1; text-align:center; color: var(--muted); padding: 60px 0;">
-                    Aucun produit ne correspond a tes filtres.
+                    Aucun produit ne correspond a vos filtres.
                 </p>
             @endforelse
         </div>

@@ -17,10 +17,19 @@ class CartController extends Controller
 
     public function index()
     {
-        $cartItems = Auth::user()->cartItems()->with('product.category')->get();
-        $total = $cartItems->sum(fn ($item) => $item->product->final_price * $item->quantity);
+        $cartItems = Auth::user()
+            ->cartItems()
+            ->with('product.category')
+            ->latest()
+            ->get();
 
-        return view('cart.index', compact('cartItems', 'total'));
+        $subtotal = $cartItems->sum(fn ($item) => $item->product->final_price * $item->quantity);
+        $tax = $subtotal * 0.1;
+        $shipping = $cartItems->isEmpty() ? 0 : 50;
+        $total = $subtotal + $tax + $shipping;
+        $totalQuantity = (int) $cartItems->sum('quantity');
+
+        return view('cart.index', compact('cartItems', 'subtotal', 'tax', 'shipping', 'total', 'totalQuantity'));
     }
 
     public function add(Request $request, Product $product)
@@ -31,7 +40,11 @@ class CartController extends Controller
 
         $quantity = (int) ($data['quantity'] ?? 1);
 
-        if ($product->stock < $quantity) {
+        if (! $product->is_active) {
+            return back()->with('error', 'Ce produit nest plus disponible.');
+        }
+
+        if ($product->stock < $quantity || $product->stock <= 0) {
             return back()->with('error', 'Stock insuffisant pour ce produit.');
         }
 
@@ -55,7 +68,9 @@ class CartController extends Controller
             ]);
         }
 
-        return back()->with('success', $product->name . ' a bien ete ajoute au panier.');
+        return redirect()
+            ->route('cart.index')
+            ->with('success', $product->name . ' a bien ete ajoute au panier.');
     }
 
     public function update(Request $request, CartItem $cartItem)

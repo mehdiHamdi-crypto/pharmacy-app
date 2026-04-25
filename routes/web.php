@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\CategoryController as AdminCategories;
 use App\Http\Controllers\Admin\DashboardController as AdminDashboard;
 use App\Http\Controllers\Admin\OrderController as AdminOrders;
 use App\Http\Controllers\Admin\ProductController as AdminProducts;
+use App\Http\Controllers\Admin\StockController as AdminStock;
 use App\Http\Controllers\Admin\UserController as AdminUsers;
 use App\Http\Controllers\Auth\CartController;
 use App\Http\Controllers\Auth\LoginController;
@@ -55,6 +56,9 @@ Route::middleware(['auth', 'admin'])
 
         Route::resource('products', AdminProducts::class)->except(['show']);
         Route::patch('products/{product}/toggle', [AdminProducts::class, 'toggle'])->name('products.toggle');
+
+        Route::get('stock', [AdminStock::class, 'index'])->name('stock.index');
+        Route::patch('stock/{product}', [AdminStock::class, 'update'])->name('stock.update');
 
         Route::resource('categories', AdminCategories::class)->except(['show']);
 

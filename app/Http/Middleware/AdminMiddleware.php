@@ -11,10 +11,16 @@ class AdminMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param  Closure(Request): (Response)  $next
+     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
     {
+        abort_unless(
+            $request->user() && $request->user()->isAdmin(),
+            403,
+            'Acces reserve aux administrateurs.'
+        );
+
         return $next($request);
     }
 }

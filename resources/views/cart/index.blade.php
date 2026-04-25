@@ -3,81 +3,136 @@
 @section('title', 'Panier - PharmaCare')
 
 @section('content')
-<div style="padding: 40px 0;">
+<section style="padding: 56px 0 80px;">
     <div class="container">
-        <div style="display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; margin-bottom:30px;">
-            <h1 style="font-size: 36px;">Mon panier</h1>
+        <div style="display:flex; justify-content:space-between; align-items:flex-end; gap:18px; flex-wrap:wrap; margin-bottom:28px;">
+            <div>
+                <span class="eyebrow">Commande</span>
+                <h1 style="font-family:var(--font-display); font-size:44px; margin-top:12px;">Mon panier</h1>
+                <p style="color:var(--muted); max-width:720px; margin-top:12px;">
+                    Retrouvez ici tous les produits ajoutes a votre panier, mettez a jour les quantites et passez a la confirmation.
+                </p>
+            </div>
+
             @if($cartItems->isNotEmpty())
                 <form action="{{ route('cart.clear') }}" method="POST">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="btn-login" style="background:white;">Vider le panier</button>
+                    <button type="submit" class="btn-login">Vider le panier</button>
                 </form>
             @endif
         </div>
 
         @if($cartItems->isEmpty())
-            <div style="text-align: center; padding: 60px 20px; background: #f9fafb; border-radius: 12px;">
-                <p style="font-size: 18px; color: #6b7280; margin-bottom: 20px;">Votre panier est vide.</p>
-                <a href="{{ route('products.index') }}" class="btn-register">Continuer les achats</a>
+            <div style="background:#fff; border:1px dashed var(--rule); border-radius:24px; padding:56px 24px; text-align:center;">
+                <div style="font-family:var(--font-display); font-size:34px; margin-bottom:12px;">Votre panier est vide</div>
+                <p style="color:var(--muted); margin-bottom:22px;">Ajoutez un produit depuis le catalogue pour le retrouver ici.</p>
+                <a href="{{ route('products.index') }}" class="btn-register">Voir le catalogue</a>
             </div>
         @else
-            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 30px;">
-                <div>
+            <div style="display:grid; grid-template-columns:minmax(0, 2fr) 360px; gap:24px; align-items:start;">
+                <div style="display:grid; gap:18px;">
                     @foreach($cartItems as $item)
-                        <div style="display: flex; gap: 20px; padding: 20px; background: white; border: 1px solid #e5e7eb; border-radius: 12px; margin-bottom: 15px;">
-                            <div style="flex: 1;">
-                                <h3 style="font-size: 18px; margin-bottom: 10px; font-weight: bold;">{{ $item->product->name }}</h3>
-                                <p style="color: #6b7280; font-size: 14px; margin-bottom: 10px;">{{ \Illuminate\Support\Str::limit($item->product->description, 80) }}</p>
-                                <p style="font-size: 16px; font-weight: bold; color: #10b981;">{{ number_format($item->product->final_price, 2, ',', ' ') }} MAD</p>
+                        <article style="background:#fff; border:1px solid var(--rule); border-radius:24px; padding:20px; display:grid; grid-template-columns:120px minmax(0, 1fr) 230px; gap:18px; align-items:start;">
+                            <div style="width:120px; height:120px; border-radius:18px; overflow:hidden; border:1px solid var(--rule); background:var(--paper-warm);">
+                                <img
+                                    src="{{ $item->product->imageSrc() }}"
+                                    alt="{{ $item->product->name }}"
+                                    style="width:100%; height:100%; object-fit:cover;"
+                                    onerror="this.onerror=null;this.src='{{ $item->product->defaultImageUrl() }}';"
+                                >
                             </div>
 
-                            <div style="text-align: right; min-width:180px;">
-                                <form action="{{ route('cart.update', $item) }}" method="POST" style="display: flex; gap: 5px; margin-bottom: 10px; justify-content:flex-end;">
+                            <div>
+                                <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:10px;">
+                                    <span style="display:inline-flex; align-items:center; gap:6px; padding:6px 12px; border-radius:999px; background:var(--accent-soft); color:var(--accent); font-family:var(--font-mono); font-size:11px; letter-spacing:1.3px; text-transform:uppercase;">
+                                        {{ $item->product->category->name ?? 'Catalogue' }}
+                                    </span>
+
+                                    @if($item->product->stock === 0)
+                                        <span style="display:inline-flex; padding:6px 12px; border-radius:999px; background:#faebeb; color:var(--danger); font-size:12px; font-weight:600;">Rupture</span>
+                                    @elseif($item->product->stock <= 10)
+                                        <span style="display:inline-flex; padding:6px 12px; border-radius:999px; background:var(--accent-soft); color:var(--accent); font-size:12px; font-weight:600;">Stock faible</span>
+                                    @else
+                                        <span style="display:inline-flex; padding:6px 12px; border-radius:999px; background:var(--sage-light); color:var(--sage-dark); font-size:12px; font-weight:600;">Disponible</span>
+                                    @endif
+                                </div>
+
+                                <h2 style="font-family:var(--font-display); font-size:28px; margin-bottom:10px; line-height:1.1;">{{ $item->product->name }}</h2>
+                                <p style="color:var(--muted); margin-bottom:14px;">{{ \Illuminate\Support\Str::limit($item->product->description, 130) }}</p>
+
+                                <div style="display:flex; gap:18px; flex-wrap:wrap; color:var(--muted); font-size:13px;">
+                                    <span>SKU : <strong style="color:var(--ink);">{{ $item->product->sku ?? 'N/R' }}</strong></span>
+                                    <span>Stock restant : <strong style="color:var(--ink);">{{ $item->product->stock }}</strong></span>
+                                    <span>Prix unitaire : <strong style="color:var(--ink);">{{ number_format($item->product->final_price, 2, ',', ' ') }} MAD</strong></span>
+                                </div>
+                            </div>
+
+                            <div style="background:var(--paper); border:1px solid var(--rule); border-radius:18px; padding:16px;">
+                                <form action="{{ route('cart.update', $item) }}" method="POST" style="display:grid; grid-template-columns:1fr auto; gap:10px; margin-bottom:14px;">
                                     @csrf
                                     @method('PATCH')
-                                    <input type="number" name="quantity" value="{{ $item->quantity }}" min="1" max="{{ $item->product->stock }}" style="width: 70px; padding: 8px; border: 1px solid #e5e7eb; border-radius: 6px;">
-                                    <button type="submit" style="padding: 8px 15px; background: #10b981; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: 600;">
-                                        OK
-                                    </button>
+                                    <input
+                                        type="number"
+                                        name="quantity"
+                                        value="{{ $item->quantity }}"
+                                        min="1"
+                                        max="{{ max($item->product->stock, $item->quantity) }}"
+                                        style="width:100%; padding:12px 14px; border:1px solid var(--rule); border-radius:12px; background:#fff;"
+                                    >
+                                    <button type="submit" class="btn-register" style="border:none;">OK</button>
                                 </form>
-                                <p style="font-size: 18px; font-weight: bold; color: #1f2937; margin-bottom: 10px;">{{ number_format($item->product->final_price * $item->quantity, 2, ',', ' ') }} MAD</p>
+
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                                    <span style="color:var(--muted);">Sous-total</span>
+                                    <strong style="font-size:18px;">{{ number_format($item->product->final_price * $item->quantity, 2, ',', ' ') }} MAD</strong>
+                                </div>
+
                                 <form action="{{ route('cart.remove', $item) }}" method="POST">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" style="padding: 6px 12px; background: #ef4444; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px;">
-                                        Supprimer
-                                    </button>
+                                    <button type="submit" class="btn-login" style="width:100%; color:var(--danger); border-color:#e7c9c9;">Supprimer</button>
                                 </form>
                             </div>
-                        </div>
+                        </article>
                     @endforeach
                 </div>
 
-                <div style="background: #f9fafb; padding: 25px; border-radius: 12px; height: fit-content;">
-                    <h3 style="font-size: 20px; margin-bottom: 20px; font-weight: bold;">Resume</h3>
-                    <div style="border-bottom: 1px solid #e5e7eb; padding-bottom: 15px; margin-bottom: 15px;">
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                            <span>Sous-total</span>
-                            <span>{{ number_format($total, 2, ',', ' ') }} MAD</span>
+                <aside style="background:#fff; border:1px solid var(--rule); border-radius:24px; padding:24px; position:sticky; top:120px;">
+                    <span class="eyebrow">Resume</span>
+                    <h2 style="font-family:var(--font-display); font-size:32px; margin:14px 0 18px;">Votre commande</h2>
+
+                    <div style="display:grid; gap:12px; margin-bottom:18px;">
+                        <div style="display:flex; justify-content:space-between; gap:16px;">
+                            <span style="color:var(--muted);">Articles</span>
+                            <strong>{{ $totalQuantity }}</strong>
                         </div>
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                            <span>TVA (10%)</span>
-                            <span>{{ number_format($total * 0.1, 2, ',', ' ') }} MAD</span>
+                        <div style="display:flex; justify-content:space-between; gap:16px;">
+                            <span style="color:var(--muted);">Sous-total</span>
+                            <strong>{{ number_format($subtotal, 2, ',', ' ') }} MAD</strong>
                         </div>
-                        <div style="display: flex; justify-content: space-between;">
-                            <span>Livraison</span>
-                            <span>50,00 MAD</span>
+                        <div style="display:flex; justify-content:space-between; gap:16px;">
+                            <span style="color:var(--muted);">TVA (10%)</span>
+                            <strong>{{ number_format($tax, 2, ',', ' ') }} MAD</strong>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; gap:16px;">
+                            <span style="color:var(--muted);">Livraison</span>
+                            <strong>{{ number_format($shipping, 2, ',', ' ') }} MAD</strong>
                         </div>
                     </div>
-                    <div style="display: flex; justify-content: space-between; font-size: 20px; font-weight: bold; margin-bottom: 20px;">
-                        <span>Total</span>
-                        <span style="color: #10b981;">{{ number_format($total + ($total * 0.1) + 50, 2, ',', ' ') }} MAD</span>
+
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding:16px 0; border-top:1px solid var(--rule); border-bottom:1px solid var(--rule); margin-bottom:18px;">
+                        <span style="font-size:18px; font-weight:600;">Total</span>
+                        <span style="font-family:var(--font-display); font-size:32px; color:var(--sage-dark);">{{ number_format($total, 2, ',', ' ') }} MAD</span>
                     </div>
-                    <a href="{{ route('checkout') }}" class="btn-register" style="display:block; text-align:center;">Passer la commande</a>
-                </div>
+
+                    <div style="display:grid; gap:10px;">
+                        <a href="{{ route('checkout') }}" class="btn-register" style="width:100%;">Passer la commande</a>
+                        <a href="{{ route('products.index') }}" class="btn-login" style="width:100%;">Continuer les achats</a>
+                    </div>
+                </aside>
             </div>
         @endif
     </div>
-</div>
+</section>
 @endsection

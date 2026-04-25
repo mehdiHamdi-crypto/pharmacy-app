@@ -3,7 +3,7 @@
 @section('title', $product->name . ' - PharmaCare')
 
 @section('content')
-<section style="padding:80px 0;">
+<section style="padding:72px 0 84px;">
     <div class="container">
         <div style="display:grid; grid-template-columns:1.1fr 1fr; gap:36px; align-items:start;">
             <div style="background:#fff; border:1px solid var(--rule); border-radius:24px; padding:28px; min-height:420px; display:flex; align-items:center; justify-content:center; overflow:hidden;">
@@ -16,7 +16,17 @@
             </div>
 
             <div>
-                <span style="display:inline-block; padding:8px 14px; border-radius:999px; background:var(--sage-light); color:var(--sage-dark); font-size:12px; letter-spacing:1px; text-transform:uppercase;">{{ $product->category->name ?? 'General' }}</span>
+                <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                    <span style="display:inline-block; padding:8px 14px; border-radius:999px; background:var(--sage-light); color:var(--sage-dark); font-size:12px; letter-spacing:1px; text-transform:uppercase;">{{ $product->category->name ?? 'General' }}</span>
+                    @if($product->stock === 0)
+                        <span style="display:inline-flex; padding:8px 14px; border-radius:999px; background:#faebeb; color:var(--danger); font-size:12px; font-weight:600;">Rupture de stock</span>
+                    @elseif($product->stock <= 10)
+                        <span style="display:inline-flex; padding:8px 14px; border-radius:999px; background:var(--accent-soft); color:var(--accent); font-size:12px; font-weight:600;">Plus que {{ $product->stock }} unite(s)</span>
+                    @else
+                        <span style="display:inline-flex; padding:8px 14px; border-radius:999px; background:var(--paper-warm); color:var(--ink); font-size:12px; font-weight:600;">{{ $product->stock }} unite(s) disponibles</span>
+                    @endif
+                </div>
+
                 <h1 style="font-family:var(--font-display); font-size:48px; line-height:1.05; margin:18px 0 16px;">{{ $product->name }}</h1>
                 <p style="font-size:16px; color:var(--muted); margin-bottom:18px;">{{ $product->description ?: 'Description a venir.' }}</p>
 
@@ -39,12 +49,19 @@
                 </div>
 
                 @auth
-                    <form action="{{ route('cart.add', $product) }}" method="POST" style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
-                        @csrf
-                        <input type="number" name="quantity" value="1" min="1" max="{{ $product->stock }}" style="width:110px; padding:12px 14px; border:1px solid var(--rule); border-radius:12px;">
-                        <button type="submit" class="btn-register" style="border:none;">Ajouter au panier</button>
-                        <a href="{{ route('products.index') }}" class="btn-login">Retour au catalogue</a>
-                    </form>
+                    @if($product->stock > 0)
+                        <form action="{{ route('cart.add', $product) }}" method="POST" style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+                            @csrf
+                            <input type="number" name="quantity" value="1" min="1" max="{{ $product->stock }}" style="width:110px; padding:12px 14px; border:1px solid var(--rule); border-radius:12px;">
+                            <button type="submit" class="btn-register" style="border:none;">Ajouter au panier</button>
+                            <a href="{{ route('products.index') }}" class="btn-login">Retour au catalogue</a>
+                        </form>
+                    @else
+                        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                            <button type="button" class="btn-login" disabled style="opacity:.65; cursor:not-allowed;">Produit indisponible</button>
+                            <a href="{{ route('products.index') }}" class="btn-register">Retour au catalogue</a>
+                        </div>
+                    @endif
                 @else
                     <div style="display:flex; gap:12px; flex-wrap:wrap;">
                         <a href="{{ route('login') }}" class="btn-register">Se connecter pour acheter</a>
